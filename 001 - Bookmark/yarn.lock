@@ -2,6 +2,18 @@
 # yarn lockfile v1
 
 
+"@doodle3d/clipper-js@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@doodle3d/clipper-js/-/clipper-js-1.0.11.tgz#d8709fe9bef03ceb8cc2844560ace0e7eefeda8f"
+  integrity sha512-KSVF9iOl9jGu02EGUnVS2ric4iQRSIypg3/CTM30+MuWsqkUhILIG2EPxvPASENi6483QmNIwGSogZuTE7CFQA==
+  dependencies:
+    "@doodle3d/clipper-lib" "^6.4.2-b"
+
+"@doodle3d/clipper-lib@^6.4.2-b":
+  version "6.4.2-b"
+  resolved "https://registry.yarnpkg.com/@doodle3d/clipper-lib/-/clipper-lib-6.4.2-b.tgz#792391a286ad336b7e9b453708ef11c8e71827d6"
+  integrity sha512-glELSijsD9b+/0d9iOdasBwqH3s+xPxD59tJ7aXkBx7klugygGOMXn7PB05AdhVyA1OYMj7GUCegaQa7nvLtmQ==
+
 "@esbuild/aix-ppc64@0.27.2":
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.27.2.tgz#521cbd968dcf362094034947f76fa1b18d2d403c"
@@ -252,6 +264,11 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.8.tgz#958b91c991b1867ced318bedea0e215ee050726e"
   integrity sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==
 
+alea@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/alea/-/alea-1.0.1.tgz#957f60741c5ad11b13f72aa02a6b89fe96a26dc4"
+  integrity sha512-QU+wv+ziDXaMxRdsQg/aH7sVfWdhKps5YP97IIwFkHCsbDZA3k87JXoZ5/iuemf4ntytzIWeScrRpae8+lDrXA==
+
 esbuild@^0.27.0:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.27.2.tgz#d83ed2154d5813a5367376bb2292a9296fc83717"
@@ -361,6 +378,11 @@ rollup@^4.43.0:
     "@rollup/rollup-win32-x64-gnu" "4.54.0"
     "@rollup/rollup-win32-x64-msvc" "4.54.0"
     fsevents "~2.3.2"
+
+simplex-noise@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/simplex-noise/-/simplex-noise-4.0.3.tgz#e60b840ecfb9ac972870c8c7979bd867a5b4032f"
+  integrity sha512-qSE2I4AngLQG7BXqoZj51jokT4WUXe8mOBrvfOXpci8+6Yu44+/dD5zqDpOx3Ux792eamTd2lLcI8jqFntk/lg==
 
 source-map-js@^1.2.1:
   version "1.2.1"
