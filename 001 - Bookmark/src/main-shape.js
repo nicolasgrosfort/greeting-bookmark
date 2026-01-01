@@ -13,7 +13,7 @@ const PARAMS = {
   // --- margins
   marginTop: 2,
   marginRight: 2,
-  marginBottom: 18,
+  marginBottom: 24,
   marginLeft: 2,
 
   // --- noise controls
@@ -44,7 +44,7 @@ const PARAMS = {
   unionStroke: "#151515",
 };
 
-function randomSeed(len = 14) {
+function randomSeed(len = 8) {
   const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz";
   let s = "";
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
@@ -137,6 +137,7 @@ fStyle.addBinding(PARAMS, "unionStroke");
 
 // --- SVG host
 let svgHost = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+svgHost.setAttribute("id", "bookmark-shape");
 document.getElementById("app").appendChild(svgHost);
 
 // --- Paper offscreen canvas (we will resize it)
@@ -277,6 +278,8 @@ function render() {
     bounds: "content",
     precision: 2,
   });
+
+  svgHost.setAttribute("id", `bookmark-shape-${PARAMS.seed}`);
 
   svgHost.innerHTML = "";
   while (exportedSVG.firstChild) svgHost.appendChild(exportedSVG.firstChild);

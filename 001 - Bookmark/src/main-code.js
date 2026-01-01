@@ -18,7 +18,7 @@ const PARAMS = {
   // --- margins (independent)
   marginTop: 2,
   marginRight: 2,
-  marginBottom: 18,
+  marginBottom: 24,
   marginLeft: 2,
 
   // --- text
@@ -34,15 +34,12 @@ const PARAMS = {
   pathPrecision: 2,
 
   // --- frame / clipping
-  clipToFrame: true, // if false, no intersect
-  showFrameDebug: false, // draw frame stroke for debug
-
-  // --- optional debug
-  debugMargins: false,
+  clipToFrame: true,
+  showFrameDebug: false,
 };
 
-// random seed (readable)
-function randomSeed(len = 14) {
+// random seed (readable, no confusing chars)
+function randomSeed(len = 8) {
   const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz";
   let s = "";
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
@@ -61,7 +58,6 @@ if (!PARAMS.seed) PARAMS.seed = randomSeed();
 // 1) DOM: SVG host + Paper setup (offscreen canvas)
 // ------------------------------
 let svgHost = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-svgHost.setAttribute("id", "bookmark");
 document.getElementById("app").appendChild(svgHost);
 
 // Paper needs a canvas; we keep it offscreen
@@ -73,12 +69,10 @@ function applyBookmarkSize() {
   const W = PARAMS.bookmarkW;
   const H = PARAMS.bookmarkH;
 
-  // Resize canvas and re-setup Paper (important)
   canvas.width = W;
   canvas.height = H;
   paper.setup(canvas);
 
-  // Sync svg host
   svgHost.setAttribute("width", `${W}mm`);
   svgHost.setAttribute("height", `${H}mm`);
   svgHost.setAttribute("viewBox", `0 0 ${W} ${H}`);
@@ -149,14 +143,11 @@ const fFrame = pane.addFolder({ title: "Frame / Clip" });
 fFrame.addBinding(PARAMS, "clipToFrame");
 fFrame.addBinding(PARAMS, "showFrameDebug");
 
-const fDebug = pane.addFolder({ title: "Debug" });
-fDebug.addBinding(PARAMS, "debugMargins");
-
 // rerender on any tweakpane change
 pane.on("change", () => rerender());
 
 // ------------------------------
-// 3) Fake code generator (seeded)
+// 3) Fake code generator (seeded) — FUN + CRITIQUE (NO EMOJI)
 // ------------------------------
 function seededRandInt(rng, min, max) {
   return Math.floor(rng() * (max - min + 1)) + min;
@@ -164,87 +155,233 @@ function seededRandInt(rng, min, max) {
 function seededChoice(rng, arr) {
   return arr[seededRandInt(rng, 0, arr.length - 1)];
 }
+function maybe(rng, p = 0.5) {
+  return rng() < p;
+}
+
+// --- lexique “vœux / critique / fun”
+const PARTS = [
+  "ai",
+  "machine",
+  "model",
+  "oracle",
+  "ghost",
+  "proxy",
+  "delegate",
+  "latency",
+  "signal",
+  "noise",
+  "bias",
+  "care",
+  "ritual",
+  "mirror",
+  "self",
+  "body",
+  "trace",
+  "opacity",
+  "audit",
+  "consent",
+  "agency",
+  "friction",
+  "choice",
+  "uncertainty",
+  "stack",
+  "twin",
+  "sensor",
+  "warmth",
+  "voice",
+  "glitch",
+  "tekh",
+  "studio",
+  "bookmark",
+  "hny",
+];
+
+const SUFFIX = [
+  "Id",
+  "Log",
+  "Trace",
+  "Loop",
+  "State",
+  "Mode",
+  "Protocol",
+  "Ritual",
+  "Pledge",
+  "Manifest",
+  "Buffer",
+  "Queue",
+  "Score",
+  "Mirror",
+  "Index",
+  "Vector",
+  "Draft",
+  "Contract",
+  "Boundary",
+  "Decision",
+  "Consent",
+  "Refusal",
+];
+
+const WORDS = [
+  "hny-2026",
+  "less-delegation",
+  "more-agency",
+  "more-care",
+  "more-play",
+  "more-friction",
+  "less-opaque",
+  "trace-the-trace",
+  "audit-the-magic",
+  "render-the-hidden",
+  "human-in-the-loop",
+  "machine-in-the-heart",
+  "consent-first",
+  "debug-my-feelings",
+  "calibrate-my-ritual",
+  "do-not-template-me",
+  "hello-synthetic-world",
+  "low-tech-high-feel",
+  "beautiful-bias",
+  "glitch-blessing",
+  "soft-resistance",
+  "stay-unpredictable",
+  "be-kind-to-your-sensors",
+];
+
+const TODO = [
+  "make it legible",
+  "reduce delegation",
+  "add consent",
+  "remove dark patterns",
+  "explain the model",
+  "keep the weird",
+  "ship the ritual",
+  "audit assumptions",
+  "stop optimizing everything",
+  "add playfulness",
+  "stay human-ish (without being a template)",
+];
+
+function ident(rng) {
+  const base = seededChoice(rng, PARTS);
+  return maybe(rng, 0.55) ? base + seededChoice(rng, SUFFIX) : base;
+}
+
+function stringLit(rng) {
+  const a = seededChoice(rng, WORDS);
+  return `"${a}:${seededRandInt(rng, 1, 99)}"`;
+}
+
+function numberLit(rng) {
+  const poetic = [0, 1, 2, 3, 7, 13, 21, 42, 64, 128, 256, 512, 1024, 2026];
+  return String(
+    maybe(rng, 0.6) ? seededChoice(rng, poetic) : seededRandInt(rng, 0, 999)
+  );
+}
+
+function boolLit(rng) {
+  return maybe(rng, 0.5) ? "true" : "false";
+}
+
+function commentLine(rng, i) {
+  const tag = seededChoice(rng, ["NOTE", "TODO", "WARNING", "BLESSING", "HEX"]);
+  return `// ${tag}: ${seededChoice(rng, TODO)} (#${i})`;
+}
+
+// mini “API” récurrente
+function callLike(rng) {
+  const callee = seededChoice(rng, [
+    "AI",
+    "MACHINE",
+    "ORACLE",
+    "DELEGATE",
+    "CARE",
+    "AUDIT",
+    "TRACE",
+    "GLITCH",
+    "LOVE",
+  ]);
+  const fn = seededChoice(rng, [
+    "ask",
+    "predict",
+    "delegate",
+    "refuse",
+    "explain",
+    "audit",
+    "render",
+    "warm",
+    "listen",
+    "bless",
+    "undo",
+  ]);
+  const arg = maybe(rng, 0.6) ? stringLit(rng) : ident(rng);
+  return `${callee}.${fn}(${arg});`;
+}
 
 function makeCodeLine(rng, i) {
-  const parts = [
-    "user",
-    "room",
-    "token",
-    "state",
-    "node",
-    "view",
-    "data",
-    "rect",
-    "path",
-    "font",
-    "line",
-    "clip",
-  ];
-  const suffix = [
-    "Id",
-    "Map",
-    "List",
-    "Cfg",
-    "Ref",
-    "Count",
-    "Index",
-    "Value",
-    "State",
-  ];
-  const ident = () =>
-    rng() < 0.4
-      ? seededChoice(rng, parts) + seededChoice(rng, suffix)
-      : seededChoice(rng, parts);
-
-  const words = [
-    "hello",
-    "bookmark",
-    "paper",
-    "opentype",
-    "svg",
-    "render",
-    "stroke",
-    "path",
-  ];
-  const stringLit = () =>
-    `"${seededChoice(rng, words)}-${seededRandInt(rng, 1, 99)}"`;
-  const numberLit = () => String(seededRandInt(rng, 0, 999));
+  const idA = ident(rng);
+  const idB = ident(rng);
 
   const templates = [
-    () => `const ${ident()} = ${numberLit()};`,
-    () => `let ${ident()} = ${stringLit()};`,
-    () => `function ${ident()}(${ident()}) { return ${ident()}; }`,
-    () => `if (${ident()} > ${numberLit()}) { ${ident()}++; }`,
+    // vœux / déclaration
+    () => `const wish2026 = ${stringLit(rng)};`,
+    () => `const ${idA} = ${numberLit(rng)};`,
+    () => `let ${idA} = ${stringLit(rng)};`,
     () =>
-      `for (let i = 0; i < ${seededRandInt(
-        rng,
-        3,
-        12
-      )}; i++) { ${ident()}.push(i); }`,
-    () => `console.log(${ident()}, ${stringLit()});`,
-    () => `export const ${ident()} = (${ident()}) => ${ident()};`,
+      `const ${idA} = { agency: ${numberLit(rng)}, opacity: ${numberLit(
+        rng
+      )}, consent: ${boolLit(rng)} };`,
+
+    // fonctions “critiques”
+    () => `function ${idA}(${idB}) { return ${idB} ?? ${stringLit(rng)}; }`,
+    () => `function refuse(${idA}) { return ${idA} === "template"; }`,
     () =>
-      `${ident()}.${seededChoice(rng, [
-        "add",
-        "set",
-        "get",
-        "map",
-        "filter",
-      ])}(${ident()});`,
+      `function delegate(${idA}, ${idB}) { return (${idA} ?? ${idB}) + " // delegated"; }`,
+    () => `function audit(${idA}) { return { ...${idA}, bias: "unknown" }; }`,
+
+    // conditions ironiques
     () =>
-      `// ${seededChoice(rng, ["TODO", "FIXME", "NOTE"])}: ${seededChoice(rng, [
-        "cleanup",
-        "optimize",
-        "refactor",
-        "edge case",
-      ])} ${i}`,
+      `if (${idA} > ${numberLit(rng)}) { ${idA}--; /* less optimization */ }`,
+    () => `if (refuse(${stringLit(rng)})) { throw new Error("no thanks."); }`,
+    () =>
+      `if (${boolLit(rng)}) { console.log("hello 2026", ${stringLit(rng)}); }`,
+
+    // loops
+    () =>
+      `for (let i = 0; i < ${seededRandInt(rng, 3, 12)}; i++) { ${callLike(
+        rng
+      )} }`,
+    () =>
+      `for (const ${idB} of ["care","play","friction","agency"]) { console.log(${idB}); }`,
+    () =>
+      `while (${idA} < ${numberLit(
+        rng
+      )}) { ${idA}++; if (${idA} > 2026) break; }`,
+
+    // rituels / traces
+    () =>
+      `const ritual = ["breathe","listen","choose","act"].map((s) => s.toUpperCase());`,
+    () =>
+      `const trace = { t: Date.now(), msg: ${stringLit(rng)}, seed: "${
+        PARAMS.seed
+      }" };`,
+    () => `console.log("tekh.studio", trace);`,
+
+    // “API” fun
+    () => callLike(rng),
+    () => `LOVE.remind(${stringLit(rng)});`,
+    () => `GLITCH.bless(${stringLit(rng)});`,
+    () => `AUDIT.explain("black-box", ${boolLit(rng)});`,
+
+    // TODO/commentaires
+    () => commentLine(rng, i),
   ];
 
   return templates[seededRandInt(rng, 0, templates.length - 1)]();
 }
 
 function generateFakeCode(seed, lineCount = 30) {
-  const rng = alea(seed); // stable generation
+  const rng = alea(seed);
   const lines = [];
   for (let i = 1; i <= lineCount; i++) lines.push(makeCodeLine(rng, i));
   return lines;
@@ -269,7 +406,7 @@ function importFillPath(d) {
 // 5) Render + Export
 // ------------------------------
 function setSVGAttributes(svgEl) {
-  svgEl.setAttribute("id", "bookmark");
+  svgEl.setAttribute("id", `bookmark-code-${PARAMS.seed}`);
   svgEl.setAttribute("width", `${PARAMS.bookmarkW}mm`);
   svgEl.setAttribute("height", `${PARAMS.bookmarkH}mm`);
   svgEl.setAttribute("viewBox", `0 0 ${PARAMS.bookmarkW} ${PARAMS.bookmarkH}`);
@@ -295,7 +432,7 @@ function renderCode(font, lines) {
   bg.fillColor = PARAMS.bgColor;
   bg.strokeColor = null;
 
-  // Frame (the "safe" drawing region)
+  // Frame (safe drawing region) => used for intersect
   const frame = new paper.Path.Rectangle({
     point: [marginLeft, marginTop],
     size: [W - marginLeft - marginRight, H - marginTop - marginBottom],
@@ -309,10 +446,10 @@ function renderCode(font, lines) {
     fontSize *
     lineFactor;
 
-  // baseline start
+  // baseline start (inside top margin)
   let y = marginTop + (font.ascender / font.unitsPerEm) * fontSize;
 
-  // We'll collect all glyph paths into a group so we can intersect once
+  // Collect glyph paths -> union once -> intersect once
   const glyphGroup = new paper.Group();
 
   for (const line of lines) {
@@ -330,8 +467,7 @@ function renderCode(font, lines) {
     if (yBottom > H - marginBottom) break;
   }
 
-  // Unite all glyph shapes (so intersect is clean)
-  // NOTE: unite() returns a new Path/CompoundPath
+  // Unite all glyph shapes (clean intersect)
   let textUnion = null;
   for (const child of glyphGroup.children.slice()) {
     if (!textUnion) {
@@ -341,11 +477,11 @@ function renderCode(font, lines) {
       textUnion.remove();
       textUnion = next;
     }
-    child.remove(); // remove originals
+    child.remove();
   }
   glyphGroup.remove();
 
-  // If no text (edge case)
+  // If no text
   if (!textUnion) {
     paper.view.update();
     return;
@@ -363,7 +499,6 @@ function renderCode(font, lines) {
   paper.project.activeLayer.removeChildren();
 
   if (PARAMS.showFrameDebug) {
-    // keep frame visible for debug
     frame.strokeColor = "#ff00ff";
     frame.dashArray = [2, 2];
     paper.project.activeLayer.addChild(frame);
@@ -399,8 +534,8 @@ function rerender() {
   applyBookmarkSize();
 
   const lines = [
-    `tekh.studio("hny-2026")`,
-    `const seed = "${PARAMS.seed}"`,
+    `tèkh studio #${PARAMS.seed}`,
+    `hny-2026 => more agency`,
     `const sketch = "001 - Bookmark"`,
     ...generateFakeCode(PARAMS.seed, PARAMS.linesCount),
   ];
