@@ -1,19 +1,17 @@
 # 001 - Bookmark
 
-Bookmark generator. Production of nonsensical, random code; Boolean operations on code. Printing with axidraw
+Bookmark generator. Production of nonsensical, random code; Boolean operations on code. Printing with axidraw.
 
-## Full
+![001 Bookmark](./docs/bookmark-all-pYMUiddw.png)
 
-![Full](./docs/bookmark-full.png)
+## Postcards
 
-## Mask
+![Code - postcard - 5x9vhCq5](./docs/bookmark-code-5x9vhCq5.png)
+![Shape - postcard - 5x9vhCq5](./docs/bookmark-shape-5x9vhCq5.png)
+![Intersect - postcard - 5x9vhCq5](./docs/bookmark-intersect-5x9vhCq5.png)
 
-![Mask](./docs/bookmark-mask.png)
+## Bookmarks
 
-## Intersect
-
-![Intersect](./docs/bookmark-intersect.png)
-
-## Substract
-
-![Substract](./docs/bookmark-substract.png)
+![Code - bookmark - pYMUidd](./docs/bookmark-code-pYMUiddw.png)
+![Shape - bookmark - pYMUidd](./docs/bookmark-shape-pYMUiddw.png)
+![Intersect - bookmark - pYMUidd](./docs/bookmark-intersect-pYMUiddw.png)
